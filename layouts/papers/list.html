@@ -6,8 +6,14 @@
 {{ range sort .Data.Pages "Date" "desc" }}
     <div class="paper">
         <p>
-            <div class="date">{{ .Date.Format "Jan. 2, 2006" }}</div>
-            <h2>
+            <div class="date">
+                {{ if gt .Date.Unix now.Unix }}
+                    (Forthcoming)
+                {{ else }}
+                    {{ .Date.Format "Jan. 2, 2006" }}
+                {{ end }}
+            </div>
+            <h2 style="margin-bottom: auto;">
                 {{ if .Params.link }}
                     <a href="{{ .Params.link }}" title="{{ .Title }}" target="_blank">{{ .Title }}</a>
                 {{ else }}

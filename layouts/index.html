@@ -4,8 +4,22 @@
 
 <p>
 Hello! I'm a MPhil student in Computer Science and XR Researcher at City University of Hong Kong. I identify as a software engineer,
-network engineer, tech enthusiast, and an attack helicopter LOL.  <a href="aboutme/">(more)</a>
+network engineer, tech enthusiast, and an attack helicopter LOL. 
+I'm particularly interested in large-scale mixed reality systems for collaboration, especially remote collaboration. <a href="aboutme/">(more)</a>
 </p>
+
+<h1>Contact Information</h1>
+<div class="contact-info">
+    {{ range $key, $value := .Site.Params.contact }}
+        <p>{{ $key | title }}: 
+            {{ if eq $key "email" }}
+                <a href="mailto:{{ $value }}">{{ $value }}</a>
+            {{ else }}
+                <a href="{{ $value }}" target="_blank">{{ $key | title }} Profile</a>
+            {{ end }}
+        </p>
+    {{ end }}
+</div>
 <br/>
 
 <h1>Latest posts</h1>
@@ -25,41 +39,46 @@ network engineer, tech enthusiast, and an attack helicopter LOL.  <a href="about
 </div>
 
 <h1>Recent or Selected Papers</h1>
-
 <div class="papers-list">
-{{ with .Site.GetPage "/papers" }}
-    {{ $sorted_papers := sort .Data.Pages "Weight" }}
-    {{ $selected_papers := first 5 $sorted_papers }}
-    {{ range $selected_papers }}
-        <div class="paper">
-            <p>
-                <div class="date">{{ .Date.Format "Jan. 2, 2006" }}</div>
-                <h2>
-                    {{ if .Params.link }}
-                        <a href="{{ .Params.link }}" title="{{ .Title }}" target="_blank">{{ .Title }}</a>
-                    {{ else }}
-                        {{ .Title }}
-                    {{ end }}
-                </h2>
-                <div class="authors">
-                    {{ $your_name := .Params.your_name }}
-                    {{ range $index, $author := .Params.authors }}
-                        {{- if ne $index 0 }}, {{ end -}}
-                        {{- if eq $author $your_name -}}
-                            <strong>{{ $author }}</strong>
-                        {{- else -}}
-                            {{ $author }}
-                        {{- end -}}
-                    {{ end }}
-                </div>
-                <div class="venue">{{ .Params.venue }}</div>
-            </p>
-        </div>
+    {{ with .Site.GetPage "/papers" }}
+        {{ $all_papers := where .Data.Pages "Kind" "page" }}
+        {{ $sorted_papers := sort $all_papers "Weight" }}
+        {{ $selected_papers := first 5 $sorted_papers }}
+        {{ range $selected_papers }}
+            <div class="paper">
+                    <div class="date">
+                        {{ if gt .Date.Unix now.Unix }}
+                            (Forthcoming)
+                        {{ else }}
+                            {{ .Date.Format "Jan. 2, 2006" }}
+                        {{ end }}
+                    </div>
+                    <h2 style="margin-bottom: auto;">
+                        {{ if .Params.link }}
+                            <a href="{{ .Params.link }}" title="{{ .Title }}" target="_blank">{{ .Title }}</a>
+                        {{ else }}
+                            {{ .Title }}
+                        {{ end }}
+                    </h2>
+                    <div class="authors">
+                        {{ $your_name := .Params.your_name }}
+                        {{ range $index, $author := .Params.authors }}
+                            {{- if ne $index 0 }}, {{ end -}}
+                            {{- if eq $author $your_name -}}
+                                <strong>{{ $author }}</strong>
+                            {{- else -}}
+                                {{ $author }}
+                            {{- end -}}
+                        {{ end }}
+                    </div>
+                    <div class="venue">{{ .Params.venue }}</div>
+                </p>
+            </div>
+        {{ end }}
+        {{ if gt (len $all_papers) 5 }}
+            <p><a href="/papers">View all papers</a></p>
+        {{ end }}
     {{ end }}
-    {{ if gt (len .Data.Pages) 5 }}
-        <p><a href="/papers">View all papers</a></p>
-    {{ end }}
-{{ end }}
-</div>
+    </div>
 
 {{ end }}
