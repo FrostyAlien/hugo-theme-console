@@ -1,0 +1,34 @@
+{{ define "main" }}
+
+<h1>All Papers</h1>
+
+<div class="papers-list">
+{{ range sort .Data.Pages "Date" "desc" }}
+    <div class="paper">
+        <p>
+            <div class="date">{{ .Date.Format "Jan. 2, 2006" }}</div>
+            <h2>
+                {{ if .Params.link }}
+                    <a href="{{ .Params.link }}" title="{{ .Title }}" target="_blank">{{ .Title }}</a>
+                {{ else }}
+                    {{ .Title }}
+                {{ end }}
+            </h2>
+            <div class="authors">
+                {{ $your_name := .Params.your_name }}
+                {{ range $index, $author := .Params.authors }}
+                    {{- if ne $index 0 }}, {{ end -}}
+                    {{- if eq $author $your_name -}}
+                        <strong>{{ $author }}</strong>
+                    {{- else -}}
+                        {{ $author }}
+                    {{- end -}}
+                {{ end }}
+            </div>
+            <div class="venue">{{ .Params.venue }}</div>
+        </p>
+    </div>
+{{ end }}
+</div>
+
+{{ end }}
